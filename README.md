@@ -8,7 +8,6 @@
      ```console
       npm i -g @nestjs/cli
       nest new nest-lecture
-      npm i pg typeorm @nestjs/typeorm
      ```
 
 ---
