@@ -1,74 +1,75 @@
-# 0-2 도커라이징 및 Cloud Run에 배포하기 **
+# 0-3 TYPEORM으로 DB 연결 및 모듈 생성**
 
 ---
 
-## **1. 도커 설치 **
-1. **docker desktop 설치**
-   - docker.com에서 docker desktop 설치 및 실행
-
----
-
-## **2. 도커라이징 **
-1. **Dockerfile 정의**
-   - 소스디렉토리에서 Dockerfile 만들기
-     ```dockerfile
-      # Use the official lightweight Node.js image.
-
-      # https://hub.docker.com/_/node
-      FROM node:22.13.0-slim
-
-
-      # Create and change to the app directory.
-      WORKDIR /usr/src/app
-
-      # Copy application dependency manifests to the container image.
-      # A wildcard is used to ensure both package.json AND package-lock.json are copied.
-      # Copying this separately prevents re-running npm install on every code change.
-      COPY package*.json ./
-
-      # Install dependencies.
-      RUN npm ci
-
-      # Copy local code to the container image.
-      COPY . ./
-
-      # Run the web service on container startup.
-      ENTRYPOINT [ "npm", "run", "start" ]
-     ```
-
-2. **도커 빌드 및 실행**
-   - 도커 빌드하기
-    ```console
-      docker build -t nest-lecture .
-     ```
-   - 빌드한 도커 서버 실행
+## **1. 패키지 설치 **
+1. **pg, typeORM 설치**
+   - 필요한 패키지 설치
      ```console
-      docker run -p 3000:3000 nest-lecture
+      npm i pg typeorm @nestjs/typeorm
      ```
 
 ---
 
-## **3. CLOUD RUN에 배포하기 **
-1. **github에 배포하기**
-   - GCP에 초대된 이메일 기반의 github에 각자 프로젝트를 main branch로 배포한다.
+## **2. typeORM 연결 **
+1. **typeOrmModule Import**
+   - src/app.module.ts에 typeOrmModule import
+     ```ts
+      import { Module } from '@nestjs/common';
+      import { AppController } from './app.controller';
+      import { AppService } from './app.service';
+      import { TypeOrmModule } from '@nestjs/typeorm';
+      import { BldgModule } from './bldg/bldg.module';
 
-2. **CLOUD RUN 에 베포하기**
-   - 저장소 연결 각자의 github에 연결
-   - 브랜치 main, 빌드유형 /Dockerfile
-   - 리전은 비용절감을 위해 오사카(asia-northeast2)로 설정
-   - 인증되지 않은 호출 허용
-   - Cloud SQL 연결 해놓기
+      @Module({
+      imports: [
+         TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'seoyj',
+            password: '1234',
+            database: 'codelab-nest',
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: true,
+         }),
+         BldgModule,
+      ],
+      controllers: [AppController],
+      providers: [AppService],
+      })
+      export class AppModule {}
+     ```
 
-3. **Hello Codelab 확인**
-   - 생성된 Cloud Run 도메인에 접속하여 되는지 확인한다.
-   - src/app.seervice.ts에서 문구를 바꿔서 github에 푸시해본다.
-    ```ts
-      return 'Hello Codelab!';
+---
+
+## **3. 빌딩 모듈 생성 **
+
+1. **빌딩 모듈 생성**
+   - 빌딩 모듈, 컨트롤러, 서비스를 nest cli로 생성
+    ```console
+      nest g module bldg
+      nest g controller bldg
+      nest g service bldg
     ```
-   - 자동으로 Cloud Run에 배포되는지 확인해보고 배포가 완료되면 서버에 접속하여 문구가 변경되었는지 확인
+   - controller : 요청을 처리하고 응답하는 역할
+   - service : controller 메서드에 따라 해당하는 DB 작업 로직
+
+2. **컨트롤러에 서비스 연결**
+   - 서비스 사용을 위해 컨트롤러에 서비스 주입
+   - src/bldg/bldg.controller.ts
+    ```ts
+      import { Controller } from '@nestjs/common';
+      import { BldgService } from './bldg.service';
+
+      @Controller('bldg')
+      export class BldgController {
+      constructor(private bldgService: BldgService) {}
+      }
+    ```
 
 
 ---
 
 ### 결과
-도커 로컬 서버 실행 및 Cloud Run 서버 실행!
+TypeOrm 연결 및 모듈 생성
