@@ -4,6 +4,6 @@ import { BldgService } from './bldg.service';
 
 @Module({
   controllers: [BldgController],
-  providers: [BldgService]
+  providers: [BldgService],
 })
 export class BldgModule {}
