@@ -43,7 +43,7 @@
      ```
    - 빌드한 도커 서버 실행
      ```console
-      nest-lecture % docker run -p 3000:3000
+      docker run -p 3000:3000 nest-lecture
      ```
 ---
 ## **3. CLOUD RUN에 배포하기 **
