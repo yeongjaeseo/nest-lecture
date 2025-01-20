@@ -8,10 +8,10 @@ import { BldgModule } from './bldg/bldg.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '아이피주소',
+      host: '34.64.248.193',
       port: 5432,
       username: 'codelab',
-      password: '비밀번호',
+      password: 'codelab1234',
       database: 'codelab-nest',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
