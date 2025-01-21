@@ -1,60 +1,61 @@
-# 0-4 Bldg 테이블의 모든 데이터 GET하는 API 만들기
+# 0-5 주변건물조회 API 만들기
 
 ---
 
-## **1. Postman 설치**
+## **1. DTO 만들기**
 
-1. **Postman 설치 후 localhost에 요청 테스트**
-- [Postman 공식 웹사이트](https://www.postman.com)에서 Postman을 다운로드하고 설치합니다.
-- Postman을 실행하고 아래와 같이 GET 요청을 테스트합니다:
+1. **DTO 정의**
+- class-validator를 설치한다.
+- class-validator는 Node.js 환경에서 데이터 유효성 검사를 수행하기 위한 라이브러리로, 클래스 기반의 객체를 정의하고 그 객체의 속성 값들이 특정 조건을 만족하는지 검사할 수 있습니다. 주로 NestJS와 함께 사용되며, DTO(Data Transfer Object)와 연계해 클라이언트로부터 전달된 데이터를 검증하는 데 자주 활용됩니다.
 ```bash
-GET localhost:3000
+npm i class-validator
 ```
+- bldg/dto/bldg-nearby-dto.ts 파일을 생성한다.
+```ts
+import { IsNumber } from 'class-validator';
 
----
+export class BldgNearbyDto {
+  @IsNumber()
+  x: number;
 
-## **2. API 코드 작성**
+  @IsNumber()
+  y: number;
 
-### 1. **TypeOrmModule Import**
-- `src/bldg.module.ts`에 `TypeOrmModule`을 Import하고 설정합니다:
-
-```typescript
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { BldgController } from './bldg.controller';
-import { BldgService } from './bldg.service';
-import { Bldg } from './bldg.entity';
-
-@Module({
-  imports: [TypeOrmModule.forFeature([Bldg])],
-  controllers: [BldgController],
-  providers: [BldgService],
-})
-export class BldgModule {}
-```
-
----
-
-### 2. **Service 코드 작성**
-- `src/bldg.service.ts`에 다음 코드를 추가하여 Service를 작성합니다:
-
-```typescript
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Bldg } from './bldg.entity';
-
-@Injectable()
-export class BldgService {
-  constructor(
-    @InjectRepository(Bldg)
-    private readonly bldgRepository: Repository<Bldg>,
-  ) {}
-
-  async findAll(): Promise<Bldg[]> {
-    return this.bldgRepository.find();
-  }
+  @IsNumber()
+  radius: number;
 }
+```
+
+---
+
+## **2. service, controller 정의**
+
+### 1. **service 코드 작성**
+- src/bldg/bldg.service.ts에 아래 코드 추가
+```typescript
+async findNearby(x: number, y: number, radius: number): Promise<Bldg[]> {
+    return this.bldgRepository
+      .createQueryBuilder('bldg')
+      .where(
+        `ST_Distance(
+           ST_SetSRID(ST_MakePoint(:x, :y), 4326)::geography, 
+           bldg.bldg_geom::geography
+         ) <= :radius`,
+        { x, y, radius },
+      )
+      .getMany();
+  }
+```
+- 4326 geometry는 degree단위이므로 geography로 변환하여 meter단위로 radius 사용
+---
+
+### 2. **Controller 코드 작성**
+- `src/bldg/bldg.controller.ts`에 다음 코드를 추가하여 Controller를 작성합니다:
+```typescript
+  @Get('nearby')
+  async findNearby(@Query() query: BldgNearbyDto): Promise<Bldg[]> {
+    return this.bldgService.findNearby(query.x, query.y, query.radius);
+  }
 ```
 
 ---
@@ -93,7 +94,7 @@ npm run start:dev
 - Postman에서 다음 URL로 요청을 보냅니다:
 
 ```bash
-GET localhost:3000/bldg
+GET localhost:3002/bldg/nearby?x=126.888923&y=37.480935&radius=10
 ```
 ---
 
