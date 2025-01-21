@@ -1,0 +1,27 @@
+## 경고! 이 파일은 업로드하지 마세요! 중요한 비밀키들이 저장되어 있어요. 로컬 개발환경에서만 사용하세요! 
+## WARNING! Do not upload this file! It contains important secret keys. Only use it in a local development environment!
+version: '3'
+
+services:
+  # Service configuration for your application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: nest-lecture-dev:local  # Names the built image
+    ports:
+      - "3002:3002"  # Maps the container port to the host
+      - "9229:9229"
+    environment:
+      # Environment variables for the service
+      NODE_ENV: development
+      PORT: 3002
+      K_SERVICE: nest-lecture
+      K_REVISION: 0
+      K_CONFIGURATION: nest-lecture
+      CLOUDSQL_CONNECTION_NAME: winged-woods-442503-f1:asia-northeast3:codelab
+      CLOUDSQL_USER: codelab
+      CLOUDSQL_PASS: password
+      CLOUDSQL_HOST: 34.56.789.123
+      CLOUDSQL_PORT: 5432
+      CLOUDSQL_DB: codelab-nest

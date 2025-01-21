@@ -8,11 +8,11 @@ import { BldgModule } from './bldg/bldg.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '아이피주소',
+      host: process.env.CLOUDSQL_HOST,
       port: 5432,
-      username: 'codelab',
-      password: '비밀번호',
-      database: 'codelab-nest',
+      username: process.env.CLOUDSQL_USER,
+      password: process.env.CLOUDSQL_PASS,
+      database: process.env.CLOUDSQL_DB,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
