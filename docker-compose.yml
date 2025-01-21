@@ -1,6 +1,5 @@
 ## 경고! 이 파일은 업로드하지 마세요! 중요한 비밀키들이 저장되어 있어요. 로컬 개발환경에서만 사용하세요! 
 ## WARNING! Do not upload this file! It contains important secret keys. Only use it in a local development environment!
-version: '3'
 
 services:
   # Service configuration for your application

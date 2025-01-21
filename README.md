@@ -160,15 +160,7 @@ Google Secret Manager를 사용하면 민감한 정보를 안전하게 저장하
    - `CLOUDSQL_DB` → Secret Manager에서 `CLOUDSQL_DB` 선택.
 
 ### 3. **권한 부여**
-Cloud Run이 Secret Manager에 접근할 수 있도록 서비스 계정에 필요한 권한을 부여합니다:
-```bash
-gcloud projects add-iam-policy-binding <PROJECT_ID> \
-  --member="serviceAccount:<SERVICE_ACCOUNT>" \
-  --role="roles/secretmanager.secretAccessor"
-```
-
-- `<PROJECT_ID>`: 프로젝트 ID.
-- `<SERVICE_ACCOUNT>`: Cloud Run 서비스 계정 이메일.
+- GCP IAM 에서 cloud run을 담당하는 compute 계정에 '보안 비밀 관리자 보안 비밀 접근자' 권한 추가
 
 ---
 
