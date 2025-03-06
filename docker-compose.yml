@@ -18,7 +18,7 @@ services:
       K_SERVICE: nest-lecture
       K_REVISION: 0
       K_CONFIGURATION: nest-lecture
-      CLOUDSQL_CONNECTION_NAME: winged-woods-442503-f1:asia-northeast3:codelab
+      CLOUDSQL_INSTANCE_CONNECTION_NAME: winged-woods-442503-f1:asia-northeast3:codelab
       CLOUDSQL_USER: codelab
       CLOUDSQL_PASS: password
       CLOUDSQL_HOST: 34.56.789.123

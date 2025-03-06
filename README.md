@@ -68,7 +68,7 @@ services:
       K_SERVICE: nest-lecture
       K_REVISION: 0
       K_CONFIGURATION: nest-lecture
-      CLOUDSQL_CONNECTION_NAME: winged-woods-442503-f1:asia-northeast3:codelab
+      CLOUDSQL_INSTANCE_CONNECTION_NAME: winged-woods-442503-f1:asia-northeast3:codelab
       CLOUDSQL_USER: codelab
       CLOUDSQL_PASS: 비밀번호
       CLOUDSQL_HOST: 34.56.789.123
@@ -112,19 +112,22 @@ TypeOrmModule.forRoot({
 
 ### 2. **환경변수로 보안 강화**
 TypeORM 설정을 환경변수로 옮겨 민감한 정보를 보호하고, 개발/배포 환경에 따라 유연하게 설정할 수 있도록 변경했습니다.
+CLOUD RUN에서 CLOUD SQL에 접속하기 위해서는 host에 연결 이름(connection name)을 사용하고, 로컬에서는 공개 IP사용
 
 #### 환경변수 사용 방식:
 ```typescript
 TypeOrmModule.forRoot({
-  type: 'postgres',
-  host: process.env.CLOUDSQL_HOST,
-  port: parseInt(process.env.CLOUDSQL_PORT, 10),
-  username: process.env.CLOUDSQL_USER,
-  password: process.env.CLOUDSQL_PASS,
-  database: process.env.CLOUDSQL_DB,
-  entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  synchronize: true,
-})
+      type: 'postgres',
+      host:
+        process.env.CLOUDSQL_HOST ||
+        `/cloudsql/${process.env.CLOUDSQL_INSTANCE_CONNECTION_NAME}`,
+      port: 5432,
+      username: process.env.CLOUDSQL_USER,
+      password: process.env.CLOUDSQL_PASS,
+      database: process.env.CLOUDSQL_DB,
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+    })
 ```
 
 - **이점**:
