@@ -148,7 +148,7 @@ Google Secret Manager를 사용하면 민감한 정보를 안전하게 저장하
 4. 각 비밀을 추가합니다:
    - 이름: `CLOUDSQL_USER`, 값: `codelab`
    - 이름: `CLOUDSQL_PASS`, 값: `비밀번호`
-   - 이름: `CLOUDSQL_HOST`, 값: `34.56.789.123`
+   - 이름: `CLOUDSQL_INSTANCE_CONNECTION_NAME`, 값: `winged-wood-1234:codelab`
    - 이름: `CLOUDSQL_PORT`, 값: `5432`
    - 이름: `CLOUDSQL_DB`, 값: `codelab-nest`
 
@@ -158,7 +158,7 @@ Google Secret Manager를 사용하면 민감한 정보를 안전하게 저장하
 3. **비밀(Environment Variables & Secrets)** 섹션에서 다음을 설정:
    - `CLOUDSQL_USER` → Secret Manager에서 `CLOUDSQL_USER` 선택.
    - `CLOUDSQL_PASS` → Secret Manager에서 `CLOUDSQL_PASS` 선택.
-   - `CLOUDSQL_HOST` → Secret Manager에서 `CLOUDSQL_HOST` 선택.
+   - `CCLOUDSQL_INSTANCE_CONNECTION_NAME` → Secret Manager에서 `CLOUDSQL_INSTANCE_CONNECTION_NAME` 선택.
    - `CLOUDSQL_PORT` → Secret Manager에서 `CLOUDSQL_PORT` 선택.
    - `CLOUDSQL_DB` → Secret Manager에서 `CLOUDSQL_DB` 선택.
 
